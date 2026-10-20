@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-# Первичная установка Hermes Agent на сервер сайта (один раз, с локальной машины, root по ключу):
-#   HOST=root@72.56.29.233 deploy/agent/setup-agent.sh
-# Ставит swap, Docker, пользователя agent (без sudo и без группы docker), сетевую изоляцию,
-# compose-проект /opt/hermes и nginx для agent.simakov.space. Ключи (.env агента) сюда не входят:
-# их кладут вручную в /home/agent/.hermes/.env (владелец agent, режим 600).
 set -euo pipefail
 
 HOST="${HOST:-root@72.56.29.233}"
@@ -12,7 +7,6 @@ HERE="$ROOT/deploy/agent"
 
 ssh "$HOST" 'set -e
 export DEBIAN_FRONTEND=noninteractive
-# swap 1 ГБ: сайт + Postgres + агент не помещаются в 1 ГБ RAM без него.
 if ! swapon --show | grep -q /swapfile; then
   fallocate -l 1G /swapfile && chmod 600 /swapfile && mkswap -q /swapfile && swapon /swapfile
   grep -q /swapfile /etc/fstab || echo "/swapfile none swap sw 0 0" >> /etc/fstab
@@ -30,7 +24,6 @@ scp -q "$HERE/agent-firewall.sh" "$HOST:/usr/local/sbin/agent-firewall.sh"
 scp -q "$HERE/agent-firewall.service" "$HOST:/etc/systemd/system/agent-firewall.service"
 scp -q "$HERE/nginx-agent.conf" "$HOST:/etc/nginx/sites-available/agent.tmp"
 
-# Память и навык - только если их ещё нет (агент мог их уже дополнить).
 for f in USER.md MEMORY.md; do
   ssh "$HOST" "test -f /home/agent/.hermes/memories/$f" || scp -q "$ROOT/agent-lab/server/memories/$f" "$HOST:/home/agent/.hermes/memories/$f"
 done
@@ -42,7 +35,6 @@ chmod 755 /usr/local/sbin/agent-firewall.sh
 cd /opt/hermes && docker compose pull -q && docker compose create
 systemctl daemon-reload && systemctl enable --now agent-firewall
 systemctl restart agent-firewall
-# nginx: файл не перезаписывается, если certbot уже добавил в него HTTPS.
 if [ -f /etc/nginx/sites-available/agent ]; then rm /etc/nginx/sites-available/agent.tmp
 else mv /etc/nginx/sites-available/agent.tmp /etc/nginx/sites-available/agent; fi
 ln -sf /etc/nginx/sites-available/agent /etc/nginx/sites-enabled/agent

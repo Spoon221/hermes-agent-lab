@@ -1,11 +1,4 @@
 #!/usr/bin/env bash
-# Ключи и конфиг Hermes Agent на сервере. Секреты передаются переменными окружения и
-# пишутся только в /home/agent/.hermes/.env (agent:agent, 600) - в репозитории их нет.
-#
-#   HOST=root@72.56.29.233 DOTPOIN_API_KEY=sk-... deploy/agent/configure-agent.sh
-#   # когда будет бот - ещё раз, с TELEGRAM_BOT_TOKEN=... TELEGRAM_ALLOWED_USERS=<свой ID>
-#
-# Без Telegram-переменных агент проверяется через CLI; с ними - запускается шлюз.
 set -euo pipefail
 
 HOST="${HOST:-root@72.56.29.233}"
@@ -18,7 +11,6 @@ if [ -n "$TELEGRAM_BOT_TOKEN" ] && ! [[ "$TELEGRAM_ALLOWED_USERS" =~ ^[0-9]+(,[0
   exit 1
 fi
 
-# .env передаётся через stdin, чтобы ключи не попали в аргументы процессов на сервере.
 {
   printf 'DOTPOIN_API_KEY=%s\n' "$DOTPOIN_API_KEY"
   [ -n "$TELEGRAM_BOT_TOKEN" ] && printf 'TELEGRAM_BOT_TOKEN=%s\nTELEGRAM_ALLOWED_USERS=%s\n' "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_ALLOWED_USERS"
