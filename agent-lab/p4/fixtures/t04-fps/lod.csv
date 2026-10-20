@@ -1,0 +1,9 @@
+run,device,fps_avg,frame_ms_p95
+1,macbook-m1,63.1,22.93
+2,pixel-7,51.9,27.04
+3,macbook-m1,54,26.15
+4,pixel-7,57,24.99
+5,macbook-m1,66.6,21.98
+6,pixel-7,61.6,22.38
+7,macbook-m1,69,20.42
+8,pixel-7,63.5,21.54

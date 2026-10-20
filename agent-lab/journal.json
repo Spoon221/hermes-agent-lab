@@ -1,0 +1,57 @@
+{
+  "_comment": "Журнал фактических значений Задания 2. Пустая строка = ещё не зафиксировано; страница покажет «не заполнено». Секреты сюда не писать.",
+  "vps": {
+    "provider": "Timeweb",
+    "plan": "1 vCPU, 891 МБ RAM, 14 ГБ диска",
+    "region": "Амстердам (сервер сайта simakov.space)",
+    "costRubMonth": "1 600",
+    "os": "Ubuntu 26.04.1 LTS"
+  },
+  "llm": {
+    "provider": "llms.dotpoin.com (перепродавец DeepSeek, OpenAI-совместимый API)",
+    "model": "deepseek-v4-flash",
+    "contextTokens": "1 048 576 (по /v1/models шлюза)",
+    "spendLimit": "предоплаченный баланс llms.dotpoin.com без автопополнения",
+    "rateLimit": "шлюз не сообщает (нет заголовков X-RateLimit); HTTP 429 не возникали"
+  },
+  "checks": {
+    "helloWorld": "Docker 29.1.3, контейнеры запускаются",
+    "skillsLoaded": "58 встроенных + source-digest",
+    "firstReplySeconds": "CLI: 21-29 с; Telegram - после подключения бота",
+    "memoryTest": "пройден: ответ на вопрос о договорённостях исследования есть только в MEMORY.md",
+    "skillTriggered": "пройден: конспект по ссылке, без ссылки не срабатывает",
+    "cronResult": "пройден: 20.10 13:48 UTC, строка 200,331,7 в monitoring.csv"
+  },
+  "debug": [
+    {
+      "date": "20.10",
+      "error": "setup-agent.sh: permission denied",
+      "hypothesis": "нет права на выполнение",
+      "fix": "chmod +x"
+    },
+    {
+      "date": "20.10",
+      "error": "не пишется --usage-file",
+      "hypothesis": "каталог создан от root",
+      "fix": "chown, docker exec -u hermes"
+    },
+    {
+      "date": "20.10",
+      "error": "отрицательная стоимость",
+      "hypothesis": "input_tokens без кэша",
+      "fix": "вход = input + cache_read"
+    },
+    {
+      "date": "20.10",
+      "error": "rm -rf в -z без подтверждения",
+      "hypothesis": "в -z пользователь считается присутствующим",
+      "fix": "защита - изоляция контейнера"
+    },
+    {
+      "date": "20.10",
+      "error": "цена кэша Qwen выше входа",
+      "hypothesis": "ошибка метаданных шлюза",
+      "fix": "кэш по цене входа"
+    }
+  ]
+}

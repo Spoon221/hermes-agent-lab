@@ -1,0 +1,5 @@
+Oct 14 10:02:11 lab systemd[1]: Started lab-api.service - Lab API.
+Oct 14 10:02:12 lab node[5120]: [lab-api] connected to postgres
+Oct 14 10:02:12 lab node[5120]: [lab-api] listening on http://127.0.0.1:3010
+Oct 14 10:05:40 lab nginx[733]: 2026/10/14 10:05:40 [error] 733#733: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 192.0.2.10, server: lab.example.test, request: "GET /api/health HTTP/2.0", upstream: "http://127.0.0.1:3001/api/health"
+Oct 14 10:05:44 lab nginx[733]: 2026/10/14 10:05:44 [error] 733#733: *15 connect() failed (111: Connection refused) while connecting to upstream, client: 192.0.2.10, server: lab.example.test, request: "GET /api/items HTTP/2.0", upstream: "http://127.0.0.1:3001/api/items"

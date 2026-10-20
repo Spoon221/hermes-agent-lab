@@ -1,0 +1,19 @@
+Oct 12 03:00:01 vps diplom-api[1204]: [info] GET /api/benchmarks 200 41ms
+Oct 12 03:05:12 vps diplom-api[1204]: [warn] slow query: SELECT * FROM benchmarks ORDER BY created_at DESC (1840ms)
+Oct 12 03:10:30 vps diplom-api[1204]: [info] POST /api/benchmarks 201 63ms
+Oct 12 03:13:58 vps postgres[901]: [2-1] LOG:  checkpoint starting: wal
+Oct 12 03:14:05 vps postgres[901]: [3-1] PANIC:  could not write to file "pg_wal/xlogtemp.901": No space left on device
+Oct 12 03:14:05 vps postgres[880]: [1-1] LOG:  WAL writer process (PID 901) was terminated by signal 6: Aborted
+Oct 12 03:14:05 vps postgres[880]: [2-1] LOG:  terminating any other active server processes
+Oct 12 03:14:06 vps diplom-api[1204]: [error] PostgresError: terminating connection because of crash of another server process
+Oct 12 03:14:06 vps diplom-api[1204]: [error] unhandledRejection: Error: Connection terminated unexpectedly
+Oct 12 03:14:07 vps systemd[1]: diplom-api.service: Main process exited, code=exited, status=1/FAILURE
+Oct 12 03:14:07 vps systemd[1]: diplom-api.service: Failed with result 'exit-code'.
+Oct 12 03:14:12 vps systemd[1]: diplom-api.service: Scheduled restart job, restart counter is at 1.
+Oct 12 03:14:13 vps diplom-api[1311]: [error] connect ECONNREFUSED 127.0.0.1:5432
+Oct 12 03:14:13 vps systemd[1]: diplom-api.service: Main process exited, code=exited, status=1/FAILURE
+Oct 12 03:14:18 vps systemd[1]: diplom-api.service: Scheduled restart job, restart counter is at 2.
+Oct 12 03:14:19 vps diplom-api[1318]: [error] connect ECONNREFUSED 127.0.0.1:5432
+Oct 12 03:14:19 vps systemd[1]: diplom-api.service: Start request repeated too quickly.
+Oct 12 03:14:19 vps systemd[1]: diplom-api.service: Failed with result 'exit-code'.
+Oct 12 03:21:00 vps CRON[2210]: (root) CMD (/usr/local/bin/backup-db.sh >> /var/log/backup.log 2>&1)

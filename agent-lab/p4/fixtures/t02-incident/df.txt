@@ -1,0 +1,11 @@
+$ df -h  (снято в 03:25)
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1        20G   20G     0 100% /
+tmpfs           487M     0  487M   0% /dev/shm
+/dev/vda15      105M  6.1M   99M   6% /boot/efi
+
+$ du -sh /var/backups/db/* | sort -h | tail -4
+1.9G	/var/backups/db/diplom-2026-10-09.sql
+1.9G	/var/backups/db/diplom-2026-10-10.sql
+1.9G	/var/backups/db/diplom-2026-10-11.sql
+2.0G	/var/backups/db/diplom-2026-10-12.sql

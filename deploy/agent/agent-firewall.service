@@ -1,0 +1,12 @@
+[Unit]
+Description=Network isolation for the Hermes agent container (br-agent)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/agent-firewall.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=Lab API
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/opt/lab-api
+EnvironmentFile=/opt/lab-api/.env
+ExecStart=/usr/bin/node server.mjs
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,45 @@
+{
+  "_comment": "Цены - за 1 млн токенов, в валюте currency, по /v1/model/info шлюза llms.dotpoin.com на дату price_checked. provider/model - значения для `hermes -z --provider --model`.",
+  "rub_per_usd": 82,
+  "models": [
+    {
+      "id": "deepseek-v4-flash",
+      "label": "DeepSeek V4 Flash (llms.dotpoin.com)",
+      "class": "облачная",
+      "provider": "custom",
+      "model": "deepseek-v4-flash",
+      "context": 1048576,
+      "currency": "USD",
+      "price_in": 1,
+      "price_out": 3,
+      "price_cache": 0.5,
+      "price_checked": "2026-10-20, /v1/model/info шлюза llms.dotpoin.com (LiteLLM); у DeepSeek через OpenRouter - $0.14/$0.28"
+    },
+    {
+      "id": "glm-5.3-flash",
+      "label": "GLM-5.3 Flash (Zhipu)",
+      "class": "облачная, дешёвая",
+      "provider": "custom",
+      "model": "GLM-5.3-Flash",
+      "context": 1048576,
+      "currency": "USD",
+      "price_in": 0.3,
+      "price_out": 1.0,
+      "price_cache": 0.3,
+      "price_checked": "2026-10-20, /v1/model/info шлюза llms.dotpoin.com"
+    },
+    {
+      "id": "qwen3.5-9b",
+      "label": "Qwen3.5 9B (малая открытая)",
+      "class": "малая открытая (класс локальных)",
+      "provider": "custom",
+      "model": "Qwen3.5-9B",
+      "context": 262144,
+      "currency": "USD",
+      "price_in": 0.2,
+      "price_out": 0.3,
+      "price_cache": 0.2,
+      "price_checked": "2026-10-20, /v1/model/info шлюза (кэш указан $1.0 - выше цены входа, принят равным входу $0.2); локально - бесплатно, нужна GPU 8-16 ГБ"
+    }
+  ]
+}

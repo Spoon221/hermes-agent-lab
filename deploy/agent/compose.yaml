@@ -1,0 +1,34 @@
+# Hermes Agent на сервере сайта (Задание 2). На сервере: /opt/hermes/compose.yaml, владелец root.
+# Данные агента - /home/agent/.hermes (= /opt/data в контейнере), владелец agent.
+# Изоляция от сайта: в контейнер смонтирован только каталог агента; сеть br-agent, из которой
+# хост доступен лишь по 80/443 (см. agent-firewall.sh) - Postgres, API и прочие сервисы закрыты.
+services:
+  hermes-agent:
+    image: nousresearch/hermes-agent:latest
+    container_name: hermes_agent
+    restart: unless-stopped
+    command: gateway run
+    environment:
+      # Процесс агента работает под UID пользователя agent, а не root.
+      HERMES_UID: "${AGENT_UID}"
+      HERMES_GID: "${AGENT_GID}"
+    volumes:
+      - /home/agent/.hermes:/opt/data
+    networks: [agent]
+    security_opt:
+      - no-new-privileges:true
+    # Ресурсы ограничены, чтобы зациклившийся агент не мешал сайту на том же 1 vCPU / 1 ГБ.
+    cpus: 0.8
+    mem_limit: 700m
+    memswap_limit: 1400m
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+networks:
+  agent:
+    driver_opts:
+      com.docker.network.bridge.name: br-agent

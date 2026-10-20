@@ -1,0 +1,5 @@
+.DS_Store
+node_modules/
+.env
+*.local
+agent-lab/p4/run.log

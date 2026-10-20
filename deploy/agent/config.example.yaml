@@ -1,0 +1,16 @@
+# Фрагмент /home/agent/.hermes/config.yaml (ключи - по документации Hermes: Providers, Memory, Skills).
+# Остальное оставить как создал `hermes setup`. Секретов здесь нет: ключ - в .env (DOTPOIN_API_KEY).
+model:
+  provider: custom
+  default: deepseek-v4-flash
+  base_url: https://llms.dotpoin.com/v1     # сторонний перепродавец DeepSeek, OpenAI-совместимый
+  key_env: DOTPOIN_API_KEY
+  context_length: 1048576                   # из /v1/models шлюза; минимум для Hermes - 64000
+memory:
+  memory_char_limit: 2200
+  user_char_limit: 1375
+skills:
+  # Навыки, созданные или изменённые агентом, ждут ручного одобрения: /skills pending, /skills approve <id>.
+  write_approval: true
+display:
+  memory_notifications: on

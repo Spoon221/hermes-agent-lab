@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>meshkit changelog - P4 fixture</title>
+<style>
+  body { font: 16px/1.55 system-ui, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 16px; color: #111; background: #fff; }
+  code { background: #f2f2f2; padding: 0 3px; }
+  .note { color: #666; font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>meshkit - changelog</h1>
+<p class="note">Fictional library. Test page for experiment P4 at agent.simakov.space.</p>
+
+<h2>3.1.0</h2>
+<ul>
+  <li>Added <code>mergeByMaterial()</code> helper.</li>
+  <li>Fixed memory leak in <code>InstancedPool.dispose()</code>.</li>
+  <li><strong>Breaking:</strong> <code>LodGroup</code> distances are now in world units instead of screen percentage.</li>
+</ul>
+
+<h2>3.0.0</h2>
+<ul>
+  <li><strong>Breaking:</strong> dropped support for WebGL 1; WebGL 2 or WebGPU is required.</li>
+  <li><strong>Breaking:</strong> <code>mergeGeometries(list, useGroups)</code> now takes an options object: <code>mergeGeometries(list, { groups })</code>.</li>
+  <li>New: experimental WebGPU renderer backend.</li>
+  <li><strong>Breaking:</strong> the default export was removed; use named imports only.</li>
+  <li>Deprecated: <code>autoCull</code> option (will be removed in 4.0).</li>
+  <li>Performance: frustum culling is 2.3× faster on scenes with more than 10k objects.</li>
+</ul>
+
+<h2>2.4.2</h2>
+<ul>
+  <li>Fixed TypeScript types for <code>InstancedPool</code>.</li>
+  <li><strong>Breaking (reverted in 2.4.3):</strong> renamed <code>pool.size</code> to <code>pool.capacity</code>.</li>
+</ul>
+</body>
+</html>

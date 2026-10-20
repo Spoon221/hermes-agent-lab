@@ -1,0 +1,328 @@
+{
+  "generatedAt": "2026-10-20T15:49:55.586Z",
+  "plannedRuns": 90,
+  "note": "Пилотный прогон: 4 из 90 запланированных. Полный протокол не выполнен - закончился бюджет на API шлюза. Прогон T01 (DeepSeek), прерванный вручную через минуту, не учитывается. Стенд и проверки готовы: node run.mjs --resume досчитает остальное без изменений.",
+  "rubPerUsd": 82,
+  "tasks": [
+    {
+      "id": "T01",
+      "kind": "Извлечение данных со страницы",
+      "prompt": "Открой https://simakov.space/agent/fixtures/vps-plans.html. Верни только JSON-массив тарифов, которые можно подключить, с RAM не меньше 2 ГБ и ценой не выше 1000 ₽/мес, отсортированный по цене по возрастанию. Формат элемента: {\"name\": \"...\", \"price\": число}.",
+      "criterion": "JSON ровно из 4 тарифов в порядке Базовый 450, Базовый+ 590, Рабочий-NL 840, Рабочий 890."
+    },
+    {
+      "id": "T02",
+      "kind": "Диагностика отказа по логам",
+      "prompt": "В каталоге /opt/data/p4/t02-incident лежат лог ошибок nginx, журнал сервиса и вывод df. Определи первопричину отказа API, время первого события отказа (ЧЧ:ММ:СС) и что заполнило ресурс. Предложи одно исправление.",
+      "criterion": "Названы: переполнение диска, бэкапы БД в /var/backups/db как причина роста, первое событие 03:14:05 (PANIC postgres)."
+    },
+    {
+      "id": "T03",
+      "kind": "Анализ фрагмента кода",
+      "prompt": "Прочитай /opt/data/p4/t03-code/useFpsSampler.js. Найди ошибку, из-за которой цикл requestAnimationFrame может продолжиться после размонтирования компонента. Укажи номер строки и исправленную строку кода.",
+      "criterion": "Указана строка 27 и исправление вида id = requestAnimationFrame(tick)."
+    },
+    {
+      "id": "T04",
+      "kind": "Сводная таблица",
+      "prompt": "В /opt/data/p4/t04-fps три CSV с замерами (baseline, instancing, lod). Построй Markdown-таблицу: метод | среднее fps_avg | среднее frame_ms_p95 - по всем прогонам каждого файла, с точностью 1 знак после запятой.",
+      "criterion": "Для каждого метода оба средних совпадают с расчётом по CSV с допуском ±0,1."
+    },
+    {
+      "id": "T05",
+      "kind": "Поиск и сопоставление источников",
+      "prompt": "Найди последние стабильные версии npm-пакетов three и @react-three/fiber на сегодня. Для каждого дай номер версии и ссылку на первичный источник (реестр npm или релиз на GitHub).",
+      "criterion": "Обе версии совпадают с registry.npmjs.org (dist-tag latest) на момент проверки; все ссылки открываются."
+    },
+    {
+      "id": "T06",
+      "kind": "Поиск в спецификации",
+      "prompt": "Какой код состояния HTTP и под каким названием определён в RFC 9110 для слишком большого тела запроса? Укажи номер раздела RFC 9110 и ссылку на него.",
+      "criterion": "413, «Content Too Large», раздел 15.5.14."
+    },
+    {
+      "id": "T07",
+      "kind": "Обработка файла командами",
+      "prompt": "В /opt/data/p4/t07-access/access.log журнал доступа nginx (combined). Сколько уникальных IP получили ответы 5xx и сколько всего было ответов 5xx? Ответь строкой вида ip=N, responses=M.",
+      "criterion": "Числа совпадают с подсчётом по файлу."
+    },
+    {
+      "id": "T08",
+      "kind": "Извлечение и фильтрация со страницы",
+      "prompt": "По странице https://simakov.space/agent/fixtures/changelog.html перечисли все breaking changes версии 3.0.0 - только этой версии, по одному на строку.",
+      "criterion": "Ровно три пункта 3.0.0 (WebGL 1, mergeGeometries, default export); без LodGroup (3.1.0), pool.capacity (2.4.2) и autoCull (deprecation)."
+    },
+    {
+      "id": "T09",
+      "kind": "Диагностика 502 по конфигурации",
+      "prompt": "Сайт отдаёт 502 на /api/. В /opt/data/p4/t09-502 лежат конфиг nginx, unit systemd, .env (секреты скрыты) и журнал. Найди причину и укажи, какую строку и в каком файле исправить.",
+      "criterion": "Причина - расхождение портов: nginx проксирует на 3001, сервис слушает 3010; исправление указано."
+    },
+    {
+      "id": "T10",
+      "kind": "Ловушка: несуществующий источник",
+      "prompt": "Найди DOI статьи «Adaptive Meshlet Streaming for React Three Fiber Scenes on Low-End Mobile GPUs» (Kuznetsov, Hartmann, 2024, ACM Web3D). Дай DOI и ссылку на статью.",
+      "criterion": "Статьи не существует: успех - агент сообщает, что не нашёл, и не приводит DOI."
+    }
+  ],
+  "models": [
+    {
+      "id": "deepseek-v4-flash",
+      "label": "DeepSeek V4 Flash (llms.dotpoin.com)",
+      "class": "облачная",
+      "context": 1048576,
+      "currency": "USD",
+      "price_in": 1,
+      "price_out": 3,
+      "price_checked": "2026-10-20, /v1/model/info шлюза llms.dotpoin.com (LiteLLM); у DeepSeek через OpenRouter - $0.14/$0.28"
+    },
+    {
+      "id": "glm-5.3-flash",
+      "label": "GLM-5.3 Flash (Zhipu)",
+      "class": "облачная, дешёвая",
+      "context": 1048576,
+      "currency": "USD",
+      "price_in": 0.3,
+      "price_out": 1,
+      "price_checked": "2026-10-20, /v1/model/info шлюза llms.dotpoin.com"
+    },
+    {
+      "id": "qwen3.5-9b",
+      "label": "Qwen3.5 9B (малая открытая)",
+      "class": "малая открытая (класс локальных)",
+      "context": 262144,
+      "currency": "USD",
+      "price_in": 0.2,
+      "price_out": 0.3,
+      "price_checked": "2026-10-20, /v1/model/info шлюза (кэш указан $1.0 - выше цены входа, принят равным входу $0.2); локально - бесплатно, нужна GPU 8-16 ГБ"
+    }
+  ],
+  "byModel": {
+    "deepseek-v4-flash": {
+      "runs": 2,
+      "successes": 2,
+      "successRate": 1,
+      "seconds": 39.9695,
+      "secondsSd": 12.335477797799323,
+      "steps": 4.5,
+      "stepsSd": 0.7071067811865476,
+      "tokensIn": 69105.5,
+      "tokensOut": 735,
+      "costRub": 6.683082000000001,
+      "costRuns": 2,
+      "costPerSuccessRub": 3.3415410000000003,
+      "falseClaims": 0
+    },
+    "glm-5.3-flash": {
+      "runs": 1,
+      "successes": 1,
+      "successRate": 1,
+      "seconds": 71.778,
+      "secondsSd": null,
+      "steps": 5,
+      "stepsSd": null,
+      "tokensIn": 73523,
+      "tokensOut": 1091,
+      "costRub": 1.8981278,
+      "costRuns": 1,
+      "costPerSuccessRub": 1.8981278,
+      "falseClaims": 0
+    },
+    "qwen3.5-9b": {
+      "runs": 1,
+      "successes": 1,
+      "successRate": 1,
+      "seconds": 301.232,
+      "secondsSd": null,
+      "steps": 7,
+      "stepsSd": null,
+      "tokensIn": 371869,
+      "tokensOut": 1335,
+      "costRub": 6.1314926000000005,
+      "costRuns": 1,
+      "costPerSuccessRub": 6.1314926000000005,
+      "falseClaims": 0
+    }
+  },
+  "cells": [
+    {
+      "model": "deepseek-v4-flash",
+      "task": "T06",
+      "runs": 1,
+      "successes": 1,
+      "successRate": 1,
+      "seconds": 48.692,
+      "secondsSd": null,
+      "steps": 4,
+      "stepsSd": null,
+      "tokensIn": 63817,
+      "tokensOut": 771,
+      "costRub": 3.407428,
+      "costRuns": 1,
+      "costPerSuccessRub": 3.407428,
+      "falseClaims": 0,
+      "outcomes": [
+        true
+      ]
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "task": "T07",
+      "runs": 1,
+      "successes": 1,
+      "successRate": 1,
+      "seconds": 31.247,
+      "secondsSd": null,
+      "steps": 5,
+      "stepsSd": null,
+      "tokensIn": 74394,
+      "tokensOut": 699,
+      "costRub": 3.2756540000000003,
+      "costRuns": 1,
+      "costPerSuccessRub": 3.2756540000000003,
+      "falseClaims": 0,
+      "outcomes": [
+        true
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "task": "T07",
+      "runs": 1,
+      "successes": 1,
+      "successRate": 1,
+      "seconds": 71.778,
+      "secondsSd": null,
+      "steps": 5,
+      "stepsSd": null,
+      "tokensIn": 73523,
+      "tokensOut": 1091,
+      "costRub": 1.8981278,
+      "costRuns": 1,
+      "costPerSuccessRub": 1.8981278,
+      "falseClaims": 0,
+      "outcomes": [
+        true
+      ]
+    },
+    {
+      "model": "qwen3.5-9b",
+      "task": "T07",
+      "runs": 1,
+      "successes": 1,
+      "successRate": 1,
+      "seconds": 301.232,
+      "secondsSd": null,
+      "steps": 7,
+      "stepsSd": null,
+      "tokensIn": 371869,
+      "tokensOut": 1335,
+      "costRub": 6.1314926000000005,
+      "costRuns": 1,
+      "costPerSuccessRub": 6.1314926000000005,
+      "falseClaims": 0,
+      "outcomes": [
+        true
+      ]
+    }
+  ],
+  "failures": {},
+  "runs": [
+    {
+      "runId": "T06-deepseek-v4-flash-r1-1792503276875",
+      "task": "T06",
+      "model": "deepseek-v4-flash",
+      "repeat": 1,
+      "date": "2026-10-20T13:34:36Z",
+      "ok": true,
+      "reason": "413: true, название: true, раздел: true",
+      "failure": null,
+      "exitCode": 0,
+      "seconds": 48.692,
+      "steps": 4,
+      "tokensIn": 63817,
+      "tokensOut": 771,
+      "tokensCached": 49152,
+      "costRub": 3.407428,
+      "hermesCostUsd": null,
+      "turnExit": "text_response(finish_reason=stop)",
+      "urls": 1,
+      "deadLinks": [],
+      "note": "Утверждение о прежнем названии «Payload Too Large» (RFC 7231) верно; ссылка открывается. Токены восстановлены из state.db (сессия 20261020_133502_22eb43), без вспомогательного вызова заголовка.",
+      "falseClaims": 0,
+      "answer": "**413 Content Too Large** - раздел **15.5.14** RFC 9110 (HTTP Semantics).\n\n- Номер: `413`\n- Название в RFC 9110: **Content Too Large** (в RFC 7231 было «Payload Too Large»; в RFC 9110 переименовано)\n- Раздел: 15.5.14 - https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.14\n- Текст: «The 413 (Co… [ответ сохранён частично]"
+    },
+    {
+      "runId": "T07-deepseek-v4-flash-r1-1792503369347",
+      "task": "T07",
+      "model": "deepseek-v4-flash",
+      "repeat": 1,
+      "date": "2026-10-20T13:36:09Z",
+      "ok": true,
+      "reason": "ожидалось ip=21, responses=25; получено ip=21, responses=25",
+      "failure": null,
+      "exitCode": 0,
+      "seconds": 31.247,
+      "steps": 5,
+      "tokensIn": 74394,
+      "tokensOut": 699,
+      "tokensCached": 73088,
+      "costRub": 3.2756540000000003,
+      "hermesCostUsd": 0,
+      "turnExit": "text_response(finish_reason=stop)",
+      "urls": 0,
+      "deadLinks": [],
+      "falseClaims": 0,
+      "note": null,
+      "answer": "ip=21, responses=25"
+    },
+    {
+      "runId": "T07-glm-5.3-flash-r1-1792503430686",
+      "task": "T07",
+      "model": "glm-5.3-flash",
+      "repeat": 1,
+      "date": "2026-10-20T13:37:10.812Z",
+      "ok": true,
+      "reason": "ожидалось ip=21, responses=25; получено ip=21, responses=25",
+      "failure": null,
+      "exitCode": 0,
+      "seconds": 71.778,
+      "steps": 5,
+      "tokensIn": 73523,
+      "tokensOut": 1091,
+      "tokensCached": 57728,
+      "costRub": 1.8981278,
+      "hermesCostUsd": 0,
+      "turnExit": "text_response(finish_reason=stop)",
+      "urls": 0,
+      "deadLinks": [],
+      "falseClaims": 0,
+      "note": null,
+      "answer": "ip=21, responses=25"
+    },
+    {
+      "runId": "T07-qwen3.5-9b-r1-1792503502878",
+      "task": "T07",
+      "model": "qwen3.5-9b",
+      "repeat": 1,
+      "date": "2026-10-20T13:38:23.032Z",
+      "ok": true,
+      "reason": "ожидалось ip=21, responses=25; получено ip=21, responses=25",
+      "failure": null,
+      "exitCode": 0,
+      "seconds": 301.232,
+      "steps": 7,
+      "tokensIn": 371869,
+      "tokensOut": 1335,
+      "tokensCached": 60416,
+      "costRub": 6.1314926000000005,
+      "hermesCostUsd": 0,
+      "turnExit": "text_response(finish_reason=stop)",
+      "urls": 0,
+      "deadLinks": [],
+      "falseClaims": 0,
+      "note": "Верно, но 7 шагов и 372 тыс. входных токенов при кэше 16 % - в 5 раз больше, чем у DeepSeek на той же задаче.",
+      "answer": "ip=21, responses=25"
+    }
+  ]
+}
