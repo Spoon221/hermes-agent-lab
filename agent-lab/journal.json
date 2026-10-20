@@ -21,7 +21,8 @@
     "memoryTest": "пройден 20.10 на первой версии MEMORY.md; после её замены не повторялся",
     "skillTriggered": "пройден: конспект по ссылке, без ссылки не срабатывает",
     "cronResult": "пройден: 20.10 13:48 UTC, строка 200,331,7 в monitoring.csv",
-    "telegramGateway": "@llmaitestingbot подключён: «telegram connected», 2 платформы; в TELEGRAM_ALLOWED_USERS только 803445508"
+    "telegramGateway": "@llmaitestingbot подключён: «telegram connected», 2 платформы; в TELEGRAM_ALLOWED_USERS только 803445508",
+    "strangerIgnored": "пройден: 16:40:58 «Blocked unauthorized user 8064890331», ответа и вызова модели нет"
   },
   "debug": [
     {
