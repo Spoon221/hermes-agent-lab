@@ -18,7 +18,7 @@
     "helloWorld": "Docker 29.1.3, контейнеры запускаются",
     "skillsLoaded": "58 встроенных + source-digest",
     "firstReplySeconds": "CLI: 21-29 с; Telegram - после подключения бота",
-    "memoryTest": "пройден: ответ на вопрос о договорённостях исследования есть только в MEMORY.md",
+    "memoryTest": "пройден 20.10 на первой версии MEMORY.md; после её замены не повторялся",
     "skillTriggered": "пройден: конспект по ссылке, без ссылки не срабатывает",
     "cronResult": "пройден: 20.10 13:48 UTC, строка 200,331,7 в monitoring.csv"
   },
