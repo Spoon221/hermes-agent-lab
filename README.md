@@ -21,7 +21,8 @@
 
 ## Конфигурация
 
-- сервер: Timeweb, Ubuntu 26.04, 1 vCPU, 891 МБ RAM, 1 600 ₽/мес;
+- сервер: Timeweb, Ubuntu 26.04, 1 vCPU, 1 ГБ RAM, 35 ГБ ПЗУ, 1 600 ₽/мес;
+- лимиты агента: `agent.max_turns: 30`, `agent.gateway_timeout: 600`, контейнер 0,8 CPU / 700 МБ;
 - модель: `deepseek-v4-flash` через OpenAI-совместимый шлюз `llms.dotpoin.com` (контекст 1M);
 - данные агента: `/home/agent/.hermes` на хосте = `/opt/data` в контейнере.
 

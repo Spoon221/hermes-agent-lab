@@ -14,3 +14,6 @@ skills:
   write_approval: true
 display:
   memory_notifications: on
+agent:
+  max_turns: 30          # не больше 30 вызовов модели на задачу (по умолчанию 500)
+  gateway_timeout: 600   # задача прерывается после 10 минут простоя

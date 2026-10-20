@@ -2,7 +2,7 @@
   "_comment": "Журнал фактических значений Задания 2. Пустая строка = ещё не зафиксировано; страница покажет «не заполнено». Секреты сюда не писать.",
   "vps": {
     "provider": "Timeweb",
-    "plan": "1 vCPU, 891 МБ RAM, 14 ГБ диска",
+    "plan": "1 vCPU, 1 ГБ RAM, 35 ГБ ПЗУ",
     "region": "Амстердам (сервер сайта simakov.space)",
     "costRubMonth": "1 600",
     "os": "Ubuntu 26.04.1 LTS"
@@ -11,7 +11,7 @@
     "provider": "llms.dotpoin.com (перепродавец DeepSeek, OpenAI-совместимый API)",
     "model": "deepseek-v4-flash",
     "contextTokens": "1 048 576 (по /v1/models шлюза)",
-    "spendLimit": "предоплаченный баланс llms.dotpoin.com без автопополнения",
+    "spendLimit": "agent.max_turns = 30 (не больше 30 вызовов модели на задачу, худший случай ≈ 50 ₽), agent.gateway_timeout = 600 с; баланс шлюза без автопополнения",
     "rateLimit": "шлюз не сообщает (нет заголовков X-RateLimit); HTTP 429 не возникали"
   },
   "checks": {
