@@ -1,15 +1,4 @@
 #!/usr/bin/env node
-/**
- * @fileoverview Прогон эксперимента P4 на VPS агента (Node 18+, пользователь agent).
- *
- *   node run.mjs                       # все задачи × все модели × 3 повтора
- *   node run.mjs --tasks T01,T07 --models deepseek-v4-flash --repeats 1
- *
- * Каждый прогон - отдельная одноразовая сессия `hermes -z` в контейнере. До и после прогона
- * память (memories/) и навыки (skills/) восстанавливаются из снимка, чтобы агент не учился
- * между повторами и задачами и прогоны оставались независимыми. Результаты дописываются
- * в runs/results.jsonl построчно, поэтому прерванный эксперимент можно продолжить (--resume).
- */
 import { spawn, execFileSync } from 'node:child_process'
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { TASKS } from './tasks.mjs'
@@ -29,15 +18,11 @@ const pick = (list, key) => (args[key] ? list.filter((x) => args[key].split(',')
 const tasks = pick(TASKS, 'tasks')
 const models = pick(CONFIG.models, 'models')
 
-// Всё внутри контейнера - от пользователя hermes (UID = agent на хосте), а не root:
-// иначе агент не сможет писать в /opt/data/p4, а память и навыки станут принадлежать root.
 const docker = (container, ...cmd) => execFileSync('docker', ['exec', '-u', 'hermes', container, ...cmd], { encoding: 'utf8' })
 
-/** Снимок и откат памяти и навыков агента внутри контейнера. */
 const snapshot = (c) => docker(c, 'sh', '-c', 'cd /opt/data && tar -cf /tmp/p4-state.tar memories skills 2>/dev/null || true')
 const restore = (c) => docker(c, 'sh', '-c', 'cd /opt/data && [ -f /tmp/p4-state.tar ] && rm -rf memories skills && tar -xf /tmp/p4-state.tar || true')
 
-/** Ссылки из ответа, которые не открываются (признак выдуманной ссылки). */
 async function deadLinks(text) {
   const urls = [...new Set(text.match(/https?:\/\/[^\s)\]>"'`]+/g) ?? [])].map((u) => u.replace(/[.,;:]+$/, ''))
   const dead = []
@@ -52,7 +37,6 @@ async function deadLinks(text) {
   return { urls: urls.length, dead }
 }
 
-/** Один прогон: агент получает задачу, ответ проверяется, расход берётся из отчёта hermes. */
 async function runOnce(task, model, repeat) {
   const container = model.container ?? 'hermes_agent'
   const runId = `${task.id}-${model.id}-r${repeat}-${Date.now()}`
@@ -67,7 +51,7 @@ async function runOnce(task, model, repeat) {
     child.stdout.on('data', (d) => { out += d })
     child.stderr.on('data', (d) => { err += d })
     const timer = setTimeout(() => {
-      try { docker(container, 'pkill', '-f', runId) } catch { /* процесс уже завершился */ }
+      try { docker(container, 'pkill', '-f', runId) } catch {}
       child.kill('SIGKILL')
       resolve({ code: null, stdout: out, stderr: err, timedOut: true })
     }, TIMEOUT_MS)
@@ -79,9 +63,7 @@ async function runOnce(task, model, repeat) {
   const seconds = (Date.now() - started) / 1000
 
   let usage = null
-  try { usage = JSON.parse(docker(container, 'cat', usagePath)) } catch { /* отчёта нет */ }
-  // Hermes: input_tokens - только некэшированный вход; кэш считается отдельно (cache_read/write).
-  // Вспомогательные вызовы (заголовок сессии, review) - в usage.auxiliary.
+  try { usage = JSON.parse(docker(container, 'cat', usagePath)) } catch {}
   const sum = (key) => (usage ? (usage[key] ?? 0) + (usage.auxiliary?.[key] ?? 0) : null)
   const tokensCached = sum('cache_read_tokens')
   const tokensIn = usage ? sum('input_tokens') + tokensCached + sum('cache_write_tokens') : null
@@ -117,7 +99,6 @@ async function runOnce(task, model, repeat) {
   }
 }
 
-// Фикстуры - в /opt/data/p4 контейнера(ов).
 for (const container of new Set(models.map((m) => m.container ?? 'hermes_agent'))) {
   execFileSync('docker', ['exec', container, 'mkdir', '-p', '/opt/data/p4/usage'])
   execFileSync('docker', ['cp', `${FIXTURES}.`, `${container}:/opt/data/p4/`])
@@ -129,8 +110,6 @@ const done = new Set(args.resume && existsSync(OUT)
   ? readFileSync(OUT, 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l)).map((r) => `${r.task}|${r.model}|${r.repeat}`)
   : [])
 
-// Повторы - внешний цикл, модели - внутренний: дрейф во времени (нагрузка провайдера,
-// смена версии модели) распределяется по всем моделям поровну.
 for (let repeat = 1; repeat <= REPEATS; repeat++) {
   for (const task of tasks) {
     for (const model of models) {

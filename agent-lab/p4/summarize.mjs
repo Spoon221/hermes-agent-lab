@@ -1,13 +1,4 @@
 #!/usr/bin/env node
-/**
- * @fileoverview Сводка эксперимента P4 для страницы: runs/results.jsonl + annotations.json →
- * public/agent/results.json. Запускается локально после того, как results.jsonl скопирован с VPS:
- *
- *   scp agent@AGENT_HOST:~/agent-lab/p4/runs/results.jsonl runs/ && node summarize.mjs
- *
- * annotations.json - ручная разметка: { "<runId>": { "falseClaims": 1, "failure": "...", "note": "..." } }.
- * Её нужно делать по тексту ответа, не глядя на автоматический вердикт.
- */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { TASKS } from './tasks.mjs'
 
@@ -29,7 +20,6 @@ const sd = (xs) => {
 const nums = (list, key) => list.map((r) => r[key]).filter((v) => typeof v === 'number')
 
 function aggregate(list) {
-  // Стоимость - по прогонам, где токены измерены; прогоны без отчёта --usage-file в неё не входят.
   const priced = list.filter((r) => typeof r.costRub === 'number')
   const costs = nums(priced, 'costRub')
   const successes = list.filter((r) => r.ok).length
@@ -67,7 +57,6 @@ runs.filter((r) => r.failure).forEach((r) => {
 
 const summary = {
   generatedAt: new Date().toISOString(),
-  // Пилот: протокол (10 задач × модели × 3 повтора) выполнен не полностью - см. note.
   plannedRuns: TASKS.length * config.models.length * 3,
   note: read('./note.txt', '').trim() || null,
   rubPerUsd: config.rub_per_usd,
@@ -79,7 +68,6 @@ const summary = {
   runs: runs.map(({ answer, stderr, ...rest }) => ({ ...rest, answer: answer?.slice(0, 1500) })),
 }
 
-// В репозитории сайта сводка пишется в public/agent/results.json; здесь - рядом.
 const out = new URL('./results.json', import.meta.url)
 writeFileSync(out, `${JSON.stringify(summary, null, 2)}\n`)
 console.log(`Прогонов: ${runs.length} → ${out.pathname}`)

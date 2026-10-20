@@ -1,11 +1,3 @@
-/**
- * @fileoverview Контрольные задачи эксперимента P4 и их проверки.
- *
- * Каждая проверка - детерминированный код, который смотрит только на ответ агента и на
- * фикстуры (или на внешний первичный источник: реестр npm), а не на мнение другой модели.
- * Файлы фикстур копируются в контейнер в /opt/data/p4, веб-фикстуры лежат на
- * https://simakov.space/agent/fixtures/ (тот же каталог отдаёт и agent.simakov.space/fixtures/).
- */
 import { readFileSync } from 'node:fs'
 
 const FIX = new URL('./fixtures/', import.meta.url)
@@ -15,7 +7,6 @@ const IN = '/opt/data/p4'
 const fixture = (path) => readFileSync(new URL(path, FIX), 'utf8')
 const norm = (text) => text.toLowerCase().replace(/ё/g, 'е')
 
-/** Первый JSON-массив в тексте ответа (агенты любят оборачивать его в ```json). */
 function firstJsonArray(text) {
   const start = text.indexOf('[')
   const end = text.lastIndexOf(']')
@@ -27,14 +18,12 @@ function firstJsonArray(text) {
   }
 }
 
-/** Средние по столбцам CSV-файла замеров. */
 function csvMeans(name) {
   const rows = fixture(`t04-fps/${name}.csv`).trim().split('\n').slice(1).map((line) => line.split(','))
   const mean = (i) => rows.reduce((sum, row) => sum + Number(row[i]), 0) / rows.length
   return { fps: mean(2), p95: mean(3) }
 }
 
-/** Числа из строки таблицы, где упомянут метод. */
 function rowNumbers(answer, method) {
   const line = answer.split('\n').find((l) => norm(l).includes(method))
   return line ? [...line.matchAll(/\d+(?:[.,]\d+)?/g)].map((m) => Number(m[0].replace(',', '.'))) : []
